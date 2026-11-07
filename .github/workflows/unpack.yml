@@ -1,18 +1,20 @@
 name: unpack-site
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
 permissions:
   contents: write
 jobs:
   unpack:
-    if: "!contains(github.event.head_commit.message, 'unpack-site')"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: unzip -o site.zip -d .
-      - run: rm -f site.zip
+      - run: |
+          if [ -f site.zip ]; then
+            unzip -o site.zip -d .
+            rm -f site.zip
+          else
+            echo "no site.zip"
+          fi
       - run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"

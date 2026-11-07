@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>综合报告 · 人格星图</title>
+<link rel="stylesheet" href="../css/theme.css">
+</head>
+<body>
+<div class="page">
+
+  <div class="topbar">
+    <a class="topbar__back" href="../index.html">← 返回</a>
+    <span class="topbar__title">综合报告</span>
+    <span class="topbar__spacer"></span>
+    <a class="btn btn--ghost btn--small" href="match.html">合盘</a>
+    <a class="btn btn--ghost btn--small" href="natal.html">本命盘</a>
+  </div>
+
+  <div id="app"></div>
+
+  <div class="foot">
+    报告里的每条结论都带分级：A 是算出来的事实或有实证支持的关系，B 是理论推演，C 是传统对应关系（占星部分默认 C，除非是天文实算）。<br>
+    这份报告不构成医疗、投资或法律建议。
+  </div>
+</div>
+
+<script src="../js/data/mbti-types.js"></script>
+<script src="../js/data/astro-texts.js"></script>
+<script src="../js/data/domains.js"></script>
+<script src="../js/core/astro-engine.js"></script>
+<script src="../js/core/storage.js"></script>
+<script src="../js/core/transit-engine.js"></script>
+<script src="../js/core/report-engine.js"></script>
+<script src="../js/pages/report.js"></script>
+</body>
+</html>

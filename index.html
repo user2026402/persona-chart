@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>人格星图 · 十六型人格与星盘合参</title>
+<meta name="description" content="专业量表测十六型人格与认知功能，真实天文星历排本命盘，两套坐标合参出深度报告。">
+<link rel="stylesheet" href="css/theme.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>☾</text></svg>">
+</head>
+<body>
+<div class="page">
+
+  <div class="deco" aria-hidden="true">
+    <i style="top:-14px;left:50px;width:20px;height:20px;opacity:.45"></i>
+    <i style="top:128px;right:8px;width:13px;height:13px;opacity:.35"></i>
+    <i style="top:466px;left:-6px;width:16px;height:16px;opacity:.4"></i>
+    <i style="top:772px;right:22px;width:24px;height:24px;opacity:.28"></i>
+    <i style="top:1128px;left:-10px;width:12px;height:12px;opacity:.45"></i>
+    <i style="top:1392px;right:46px;width:17px;height:17px;opacity:.32"></i>
+  </div>
+
+  <div class="hero">
+    <div class="hero__text">
+      <p class="hero__kicker">十六型 · 十二星座 · 十行星</p>
+      <h1>人格星图</h1>
+      <p class="hero__sub">先用量表测出你这个人怎么运作，再用真实天文星历排出你在什么主题上运作。两套坐标，一份报告。</p>
+    </div>
+    <div class="hero__art">
+      <img src="assets/mascot.png" alt="抱着月亮枕头睡觉的小人">
+    </div>
+  </div>
+
+  <div class="entries" style="margin-top:22px">
+
+    <a class="entry" href="pages/test.html">
+      <div class="entry__no">01 · 人格</div>
+      <div class="entry__title">十六型人格测评</div>
+      <div class="entry__desc">标准档 76 题、深度档 108 题（加测八维认知功能）。九种题型混排：强制二选一、情境判断、词汇偏好、七点量表、效度检测与五因素锚点。输出维度倾向、临界双型候选与可信度分级。</div>
+      <div class="entry__state" id="state-test">约 15 分钟</div>
+      <span class="entry__glyph" aria-hidden="true">☾</span>
+    </a>
+
+    <a class="entry" href="pages/birth.html">
+      <div class="entry__no">02 · 星盘</div>
+      <div class="entry__title">出生信息与排盘</div>
+      <div class="entry__desc">按真实天文星历计算行星黄经、上升中天与十二宫宫头。不知道出生时间也能用——会切到区间模式，并区分「实算」与「条件成立」。</div>
+      <div class="entry__state" id="state-birth">需要出生时间与城市</div>
+      <span class="entry__glyph" aria-hidden="true">☉</span>
+    </a>
+
+    <a class="entry" href="pages/report.html">
+      <div class="entry__no">03 · 合参</div>
+      <div class="entry__title">综合报告</div>
+      <div class="entry__desc">人格机制 × 星盘主题 × 当下行运，按八个生活领域逐块展开，每条结论标注来源与置信度（A 实算 / B 理论 / C 传统）。</div>
+      <div class="entry__state" id="state-report">八个领域 · 融合层 · 情境指引</div>
+      <span class="entry__glyph" aria-hidden="true">✶</span>
+    </a>
+
+  </div>
+
+  <div class="card card--split" style="margin-top:22px">
+    <div class="grid2">
+      <div>
+        <h2 style="margin-bottom:8px">两个人的时候</h2>
+        <p class="small">两种人格类型的适配度，加上两张盘的合盘：行星对行星的相位、你的行星落在对方哪一宫。分数只是接触指数，重点在那几条「必须提前说清楚」的地方。</p>
+        <a class="btn btn--ghost btn--small" href="pages/match.html">做合盘</a>
+      </div>
+      <div>
+        <h2 style="margin-bottom:8px">我自己的盘</h2>
+        <p class="small">本命盘之外还有三层时间：当下行运（此刻天上的行星压在你本命的哪里）、日返（一年一张，生日那一刻起算）、月返（约 27 天一张，情绪节奏）。</p>
+        <div class="row">
+          <a class="btn btn--ghost btn--small" href="pages/natal.html">看本命盘</a>
+          <a class="btn btn--ghost btn--small" href="pages/birth.html">改出生信息</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card card--split" style="margin-top:22px">
+    <h2>这个站是怎么算的</h2>
+    <div class="grid2">
+      <div>
+        <h3 style="margin-top:0">人格部分</h3>
+        <p class="small">四维二分框架（十六型）+ 八维认知功能（深度档）+ 五因素锚点。计分不只看字母，也看每个维度的倾向强度；45%–55% 落在临界带时会给双型候选与区分判据，而不是硬给一个答案。</p>
+        <p class="small">测评本身不是临床诊断工具。类型描述的是当下的偏好结构，不是命运。</p>
+      </div>
+      <div>
+        <h3 style="margin-top:0">星盘部分</h3>
+        <p class="small">太阳与行星用 JPL 近似开普勒根数，月亮用 Meeus 主项级数，坐标经岁差与章动修正到当日黄道，宫位按 Placidus 数值求解。行星黄经误差在 0.02° 量级。</p>
+        <p class="small">占星没有因果层的实证支持。天文位置标 A，占星解读标 B 或 C，两者分开写，不混成一样确定的口气。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card card--warm card--save">
+    <div class="between">
+      <div>
+        <h2 style="margin-bottom:6px">存档与设备</h2>
+        <p class="small" style="margin:0">所有结果只存在这个浏览器里。换设备或重装系统之前，记得导出 JSON。</p>
+      </div>
+      <div class="row">
+        <button class="btn btn--ghost btn--small" id="btn-export">导出存档</button>
+        <label class="btn btn--ghost btn--small" for="file-import" style="margin:0">导入存档</label>
+        <input type="file" id="file-import" accept=".json" hidden>
+      </div>
+    </div>
+  </div>
+
+  <div class="card card--stars strip center" style="padding:44px 38px">
+    <p style="display:inline-block;margin:0;padding:8px 26px;border-radius:var(--radius-pill);background:var(--card);color:var(--ink-soft);font-size:13.5px">星盘里没有命运，只有你出生那一刻，天空恰好是这个样子。</p>
+  </div>
+
+  <div class="foot">
+    人格星图 · 十六型人格与星盘合参<br>
+    量表参考 Jung 类型学、Myers-Briggs 体系与五因素模型；星历参考 Meeus《天文算法》与 JPL 近似根数。
+  </div>
+</div>
+
+<script src="js/core/storage.js"></script>
+<script>
+(function () {
+  const st = Store.load();
+
+  if (st.mbti && st.mbti.result) {
+    const r = st.mbti.result;
+    document.getElementById('state-test').innerHTML =
+      `<span class="pill pill--green">已完成 · ${r.code}</span>`;
+  }
+  if (st.birth) {
+    const b = st.birth;
+    document.getElementById('state-birth').innerHTML =
+      `<span class="pill pill--green">已录入 · ${b.y}-${String(b.m).padStart(2, '0')}-${String(b.d).padStart(2, '0')}${b.timeUnknown ? '（时间未知）' : ''}</span>`;
+  }
+
+  if (st.mbti && st.mbti.result && st.birth) {
+    document.getElementById('state-report').innerHTML = '<span class="pill pill--green">报告已可生成</span>';
+  } else if (st.mbti && st.mbti.result) {
+    document.getElementById('state-report').innerHTML = '<span class="pill pill--rose">还差出生信息</span>';
+  } else if (st.birth) {
+    document.getElementById('state-report').innerHTML = '<span class="pill pill--rose">还差人格测评</span>';
+  }
+
+  document.getElementById('btn-export').addEventListener('click', function () {
+    const blob = new Blob([Store.exportJSON()], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'persona-chart-存档.json';
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  });
+
+  document.getElementById('file-import').addEventListener('change', function (e) {
+    const f = e.target.files[0];
+    if (!f) return;
+    const fr = new FileReader();
+    fr.onload = function () {
+      try {
+        Store.importJSON(String(fr.result));
+        location.reload();
+      } catch (err) {
+        alert('导入失败：' + err.message);
+      }
+    };
+    fr.readAsText(f);
+  });
+})();
+</script>
+</body>
+</html>

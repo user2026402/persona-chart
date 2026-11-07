@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>本命盘 · 人格星图</title>
+<link rel="stylesheet" href="../css/theme.css">
+</head>
+<body>
+<div class="page">
+
+  <div class="topbar">
+    <a class="topbar__back" href="../index.html">← 返回</a>
+    <span class="topbar__title">本命盘</span>
+    <span class="topbar__spacer"></span>
+    <a class="topbar__back" href="report.html">综合报告</a>
+    <a class="topbar__back" href="birth.html">修改出生信息</a>
+  </div>
+
+  <div id="app">
+    <div class="card"><div class="muted small">正在计算…</div></div>
+  </div>
+
+  <div class="foot">
+    太阳与行星用 JPL 近似根数，月亮用 Meeus 主项，宫头按 Placidus 数值求解。<br>
+    本命盘用途下行星黄经误差在 0.02° 量级；上升点的误差主要来自出生时间与地点精度。
+  </div>
+</div>
+
+<script src="../js/data/cities.js"></script>
+<script src="../js/data/astro-texts.js"></script>
+<script src="../js/core/astro-engine.js"></script>
+<script src="../js/core/storage.js"></script>
+<script src="../js/ui/chart-draw.js"></script>
+<script src="../js/core/transit-engine.js"></script>
+<script src="../js/core/forecast.js"></script>
+<script src="../js/pages/natal.js"></script>
+</body>
+</html>

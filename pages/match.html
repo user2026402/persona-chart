@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>合盘 · 人格星图</title>
+<link rel="stylesheet" href="../css/theme.css">
+</head>
+<body>
+<div class="page page--narrow">
+
+  <div class="topbar">
+    <a class="topbar__back" href="../index.html">← 返回</a>
+    <span class="topbar__title">合盘与适配度</span>
+    <span class="topbar__spacer"></span>
+    <a class="topbar__back" href="report.html">综合报告</a>
+  </div>
+
+  <div class="card">
+    <h2>两套坐标放在一起看</h2>
+    <p class="small muted">这里做两件事，都可以单独用：一是两种人格类型的适配度（规则来自各维度的机制差异），二是两张星盘的合盘（行星之间的相位与宫位叠加）。两套结论不互相替代——类型说「你们怎么运作」，合盘说「你们在哪些主题上互相点亮、哪些地方互相消耗」。</p>
+    <div id="me" class="note" style="margin-bottom:0"></div>
+  </div>
+
+  <div class="card">
+    <h2>对方的资料</h2>
+    <div class="grid2">
+      <div>
+        <label class="small muted" for="p-date">出生日期</label>
+        <input id="p-date" type="date" min="1901-01-01" max="2030-12-31" style="width:100%;padding:11px 14px;border:1.5px solid var(--line);border-radius:14px;background:#fffcf0;font-family:inherit;font-size:15px;color:var(--ink)">
+      </div>
+      <div>
+        <label class="small muted" for="p-time">出生时间</label>
+        <input id="p-time" type="time" style="width:100%;padding:11px 14px;border:1.5px solid var(--line);border-radius:14px;background:#fffcf0;font-family:inherit;font-size:15px;color:var(--ink)">
+      </div>
+    </div>
+    <label style="display:flex;align-items:center;gap:10px;margin:14px 0 0;font-size:14px;cursor:pointer">
+      <input id="p-unknown" type="checkbox" style="width:18px;height:18px;accent-color:#f2c63f">
+      不知道对方的准确出生时间
+    </label>
+
+    <div style="margin-top:14px">
+      <label class="small muted" for="p-city">出生城市</label>
+      <input id="p-city" list="citylist" placeholder="输入城市名" autocomplete="off" style="width:100%;padding:11px 14px;border:1.5px solid var(--line);border-radius:14px;background:#fffcf0;font-family:inherit;font-size:15px;color:var(--ink)">
+      <datalist id="citylist"></datalist>
+    </div>
+
+    <div class="grid2" style="margin-top:12px">
+      <div>
+        <label class="small muted" for="p-lat">纬度</label>
+        <input id="p-lat" type="number" step="0.01" placeholder="30.57" style="width:100%;padding:11px 14px;border:1.5px solid var(--line);border-radius:14px;background:#fffcf0;font-family:inherit;font-size:15px;color:var(--ink)">
+      </div>
+      <div>
+        <label class="small muted" for="p-lon">经度</label>
+        <input id="p-lon" type="number" step="0.01" placeholder="104.07" style="width:100%;padding:11px 14px;border:1.5px solid var(--line);border-radius:14px;background:#fffcf0;font-family:inherit;font-size:15px;color:var(--ink)">
+      </div>
+    </div>
+
+    <div class="grid2" style="margin-top:12px">
+      <div>
+        <label class="small muted" for="p-type">对方的人格类型（知道就选，不知道可留空）</label>
+        <select id="p-type" style="width:100%;padding:11px 14px;border:1.5px solid var(--line);border-radius:14px;background:#fffcf0;font-family:inherit;font-size:15px;color:var(--ink)">
+          <option value="">不确定 / 未测</option>
+        </select>
+      </div>
+      <div>
+        <label class="small muted" for="p-relation">关系场景</label>
+        <select id="p-relation" style="width:100%;padding:11px 14px;border:1.5px solid var(--line);border-radius:14px;background:#fffcf0;font-family:inherit;font-size:15px;color:var(--ink)">
+          <option value="love">恋人 / 暧昧</option>
+          <option value="friend">朋友</option>
+          <option value="work">同事 / 合作</option>
+          <option value="family">家人</option>
+        </select>
+      </div>
+    </div>
+
+    <button class="btn btn--wide" id="btn-run" style="margin-top:18px">开始合盘</button>
+    <p class="small faint center" id="p-hint" style="margin:10px 0 0">资料只存在这个浏览器里。时间未知时，上升与宫位部分会退化为条件结论。</p>
+  </div>
+
+  <div id="out"></div>
+
+  <div class="foot">类型适配度按四维度机制差异与功能栈重合度计算；合盘按行星间主要相位的容许度与权重计算。两者都是解释框架，不是对关系结果的预测。</div>
+</div>
+
+<script src="../js/data/cities.js"></script>
+<script src="../js/data/astro-texts.js"></script>
+<script src="../js/data/mbti-types.js"></script>
+<script src="../js/data/mbti-functions.js"></script>
+<script src="../js/core/astro-engine.js"></script>
+<script src="../js/core/storage.js"></script>
+<script src="../js/core/transit-engine.js"></script>
+<script src="../js/core/synastry-engine.js"></script>
+<script src="../js/pages/match.js"></script>
+</body>
+</html>

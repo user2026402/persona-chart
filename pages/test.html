@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>十六型人格测评 · 人格星图</title>
+<link rel="stylesheet" href="../css/theme.css">
+</head>
+<body>
+<div class="page page--narrow">
+
+  <div class="topbar">
+    <a class="topbar__back" href="../index.html">← 返回</a>
+    <span class="topbar__title">十六型人格测评</span>
+  </div>
+
+  <div class="card" id="intro">
+    <h2>开始之前</h2>
+    <p class="small">标准档：66 道量表题 + 6 道效度题 + 10 道五因素题（可跳过）。深度档再加 32 道八维认知功能题，用来分清「你是什么型」和「你实际怎么运转」。没有时间限制，凭第一反应作答比反复推敲更准。</p>
+    <p class="small">其中两组「换个说法问同一件事」的题用来检测作答是否稳定，两道几乎没人能同意的题检测迎合倾向。它们不进分数，只影响结果的可信度。</p>
+    <div class="grid2" style="margin:18px 0 6px">
+      <div class="note" style="margin:0">
+        <div class="muted small">标准档</div>
+        <h3 style="margin:6px 0 6px">四维 + 五因素</h3>
+        <p class="small" style="margin-bottom:14px">约 15 分钟。给出十六型、维度倾向、临界双型候选与可信度。</p>
+        <button class="btn btn--wide" data-mode="standard">开始标准档</button>
+      </div>
+      <div class="note note--green" style="margin:0">
+        <div class="muted small">深度档</div>
+        <h3 style="margin:6px 0 6px">四维 + 五因素 + 八维认知功能</h3>
+        <p class="small" style="margin-bottom:14px">约 25 分钟。多 32 题，能看出你的实测功能栈和类型标准栈差在哪。</p>
+        <button class="btn btn--wide" data-mode="deep">开始深度档</button>
+      </div>
+    </div>
+    <p class="small faint" style="margin-bottom:0">结果只存在你的浏览器里。中途关掉会丢进度，答题期间别清缓存。</p>
+  </div>
+
+  <div id="quiz" hidden>
+    <div class="progress" id="progress">
+      <span id="prog-text">已答 0 / 76</span>
+      <div class="progress__track"><div class="progress__bar" id="prog-bar" style="width:0%"></div></div>
+      <button class="btn btn--ghost btn--small" id="btn-jump">下一题未答</button>
+    </div>
+
+    <div id="qlist"></div>
+
+    <div class="card card--warm" id="submit-card">
+      <div class="between">
+        <div>
+          <h3 style="margin:0 0 4px">全部答完后生成结果</h3>
+          <p class="small" id="submit-hint" style="margin:0">还有 76 题没答</p>
+        </div>
+        <button class="btn" id="btn-submit" disabled>生成结果</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot">十六型人格不是诊断工具。结果用于自我探索与结构化反思。</div>
+</div>
+
+<script src="../js/data/mbti-questions.js"></script>
+<script src="../js/data/mbti-types.js"></script>
+<script src="../js/data/mbti-functions.js"></script>
+<script src="../js/core/mbti-engine.js"></script>
+<script src="../js/core/bigfive-engine.js"></script>
+<script src="../js/core/function-engine.js"></script>
+<script src="../js/core/storage.js"></script>
+<script src="../js/pages/test.js"></script>
+</body>
+</html>

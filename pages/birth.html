@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>出生信息 · 人格星图</title>
+<link rel="stylesheet" href="../css/theme.css">
+</head>
+<body>
+<div class="page page--narrow">
+
+  <div class="topbar">
+    <a class="topbar__back" href="../index.html">← 返回</a>
+    <span class="topbar__title">出生信息</span>
+  </div>
+
+  <div class="card card--moon">
+    <h2>排出你的本命盘</h2>
+    <p class="small muted">星盘靠的是「你出生那一刻，站在那个地点，头顶的天空长什么样」。所以时间和地点都要尽量准。</p>
+    <div class="note">
+      <strong>为什么时间重要：</strong>上升点每 4 分钟走约 1°，差 30 分钟就足以让上升换一个星座，十二宫的宫头也会整体错位。所以时间填到分钟，比填「大概早上」有用得多。
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>填写</h2>
+
+    <div class="grid2">
+      <div>
+        <label class="small muted" for="f-date">出生日期</label>
+        <input id="f-date" type="date" min="1901-01-01" max="2030-12-31" style="width:100%;padding:11px 14px;border:1.5px solid var(--line);border-radius:14px;background:#fffcf0;font-family:inherit;font-size:15px;color:var(--ink)">
+      </div>
+      <div>
+        <label class="small muted" for="f-time">出生时间（24 小时制）</label>
+        <input id="f-time" type="time" style="width:100%;padding:11px 14px;border:1.5px solid var(--line);border-radius:14px;background:#fffcf0;font-family:inherit;font-size:15px;color:var(--ink)">
+      </div>
+    </div>
+
+    <label style="display:flex;align-items:center;gap:10px;margin:14px 0 0;font-size:14px;cursor:pointer">
+      <input id="f-unknown" type="checkbox" style="width:18px;height:18px;accent-color:#f2c63f">
+      我不知道准确的出生时间（或只记得大概）
+    </label>
+    <p class="small faint" id="unknown-hint" style="display:none;margin:8px 0 0">
+      会切换到区间模式：按日出、正午、日落、子夜各出一盘，并明确标出哪些结论能确定、哪些取决于真实时间。上升星座与宫位不会硬猜。
+    </p>
+
+    <div style="margin-top:16px">
+      <label class="small muted" for="f-city">出生城市</label>
+      <input id="f-city" list="citylist" placeholder="输入城市名，如：成都" autocomplete="off"
+        style="width:100%;padding:11px 14px;border:1.5px solid var(--line);border-radius:14px;background:#fffcf0;font-family:inherit;font-size:15px;color:var(--ink)">
+      <datalist id="citylist"></datalist>
+      <p class="small faint" style="margin:8px 0 0">中国城市 244 个，含地级市与主要县级市；海外或找不到时，直接在下面填经纬度。</p>
+    </div>
+
+    <div class="grid2" style="margin-top:12px">
+      <div>
+        <label class="small muted" for="f-lat">纬度（北纬为正）</label>
+        <input id="f-lat" type="number" step="0.01" placeholder="30.57"
+          style="width:100%;padding:11px 14px;border:1.5px solid var(--line);border-radius:14px;background:#fffcf0;font-family:inherit;font-size:15px;color:var(--ink)">
+      </div>
+      <div>
+        <label class="small muted" for="f-lon">经度（东经为正）</label>
+        <input id="f-lon" type="number" step="0.01" placeholder="104.07"
+          style="width:100%;padding:11px 14px;border:1.5px solid var(--line);border-radius:14px;background:#fffcf0;font-family:inherit;font-size:15px;color:var(--ink)">
+      </div>
+    </div>
+
+    <div class="grid2" style="margin-top:12px">
+      <div>
+        <label class="small muted" for="f-tz">时区（UTC 偏移）</label>
+        <select id="f-tz" style="width:100%;padding:11px 14px;border:1.5px solid var(--line);border-radius:14px;background:#fffcf0;font-family:inherit;font-size:15px;color:var(--ink)">
+          <option value="8" selected>UTC+8（中国标准时间）</option>
+          <option value="9">UTC+9</option>
+          <option value="7">UTC+7</option>
+          <option value="5.5">UTC+5:30</option>
+          <option value="0">UTC+0</option>
+          <option value="-5">UTC−5</option>
+          <option value="-8">UTC−8</option>
+          <option value="10">UTC+10</option>
+        </select>
+      </div>
+      <div>
+        <label class="small muted">夏令时</label>
+        <div id="dst-box" style="padding:11px 14px;border:1.5px solid var(--line);border-radius:14px;background:var(--card-inset);font-size:13.5px;color:var(--ink-soft)">按日期自动判定</div>
+      </div>
+    </div>
+
+    <div style="margin-top:18px">
+      <label class="small muted" for="f-name">档案名（可选）</label>
+      <input id="f-name" placeholder="给自己这份档案起个名字"
+        style="width:100%;padding:11px 14px;border:1.5px solid var(--line);border-radius:14px;background:#fffcf0;font-family:inherit;font-size:15px;color:var(--ink)">
+    </div>
+
+    <div class="note note--warn" id="old-warn" style="display:none">
+      1949 年以前中国的时区多次变迁，部分地方使用地方时。若出生年份早于 1949，建议向家里确认当时的「钟表时间」是否已是标准时；这里默认按 UTC+8 处理。
+    </div>
+
+    <button class="btn btn--wide" id="btn-submit" style="margin-top:18px">计算我的星盘</button>
+    <p class="small faint center" id="form-hint" style="margin:10px 0 0">日期、时间、地点都会参与计算，越准越有意义。</p>
+    <p class="small faint center" style="margin:8px 0 0">出生信息只写进这个浏览器的本地存储，不发送到服务器。</p>
+  </div>
+
+  <div class="foot">行星位置精度在 0.02° 量级；上升点的误差主要来自出生时间与地点本身。</div>
+</div>
+
+<script src="../js/data/cities.js"></script>
+<script src="../js/data/astro-texts.js"></script>
+<script src="../js/core/astro-engine.js"></script>
+<script src="../js/core/storage.js"></script>
+<script src="../js/pages/birth.js"></script>
+</body>
+</html>

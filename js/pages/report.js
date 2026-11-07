@@ -68,24 +68,37 @@
 
   /* ---------- 领域权重 ---------- */
   const wcard = el('div', 'card');
+  const sorted = report.domains.slice().sort((a, b) => b.weight - a.weight);
+  const topNames = sorted.slice(0, 2).map(d => d.name);
+  const lowName = sorted[sorted.length - 1].name;
   let wh = `<h2>八个领域在你身上的权重</h2>
-    <p class="small muted">权重 = 该领域对应的宫位里落了几颗行星（主宫 0.6 / 次宫 0.3）再归一化。它说明哪几块生活被这张盘重点写过，不代表哪个更重要。</p>`;
+    <p class="small">把十颗行星当成十个「关注点」，十二宫当成十二块生活。哪块生活里落进去的星多，这份盘在这块上能说的事就多，下面的解读也会更细。百分比只是把八块的信息量摊开来比，<strong>不是</strong>「你多在乎它」，也不是打分。</p>`;
   const maxW = Math.max.apply(null, report.domains.map(d => d.weight)) || 1;
   report.domains.forEach(d => {
     const w = Math.round(d.weight / maxW * 100);
+    let hint = '';
+    if (topNames.indexOf(d.name) >= 0) hint = '这张盘对这块写得最细，后面这一域的解读最值得先看。';
+    else if (d.name === lowName) hint = '这张盘在这块的信息最少，解读会比较笼统，别把它当重点。';
     wh += `<div class="lean">
       <div class="lean__head"><span><strong>${d.name}</strong></span><span class="muted">${d.weight}%</span></div>
       <div class="lean__track"><div class="lean__fill" style="left:0;width:${w}%"></div></div>
+      ${hint ? `<div class="small faint" style="margin-top:6px">${hint}</div>` : ''}
     </div>`;
   });
-  wh += `<div class="note" style="margin-bottom:0">没有出生信息时这八条都是等权的——权重栏只反映宫位，不反映你这个人。</div>`;
+  wh += `<div class="note" style="margin-bottom:0">
+    <strong>怎么用这一栏</strong>：先读最高的两块——那是这张盘的主要内容；再读最低的一块，知道它在哪些事上其实没给你多少信息，别硬套。
+    ${report.hasChart ? '' : '你现在没填出生信息，八块等权，这一栏等于没有，直接跳到下面的领域解读就行。'}
+  </div>
+  <details class="fold"><summary>这个百分比是怎么算的</summary>
+    <p class="small" style="margin-bottom:0">每个领域对应一两个宫位。宫位里落一颗行星算一份，主要宫位记 0.6、次要宫位记 0.3，八块加起来再换成百分比。所以它衡量的是「宫位里有没有星」，跟行星本身是什么、落在哪个星座无关。</p>
+  </details>`;
   wcard.innerHTML = wh;
   app.appendChild(wcard);
 
   /* ---------- 八领域 ---------- */
   const dmHead = el('div', 'card card--warm');
   dmHead.innerHTML = `<h2>按领域展开</h2>
-    <p class="small" style="margin:0">每块都是同一套结构：你在这域的方式（机制 → 可验证表现 → 风险）→ 星盘上对应的落点 → 合成 → 你能执行的动作。理论骨架收在折叠里，想核对出处就展开。</p>`;
+    <p class="small" style="margin:0">每一块都按同一个顺序说：你在这一域怎么运作、具体会表现成什么样、容易踩什么坑 → 星盘上对应落在哪 → 两者合起来是什么结论 → 你现在能做的两三件事。理论出处收在折叠里，想核对再展开。</p>`;
   app.appendChild(dmHead);
 
   const clsCycle = ['card', 'card--warm', 'card', 'card--inset'];
@@ -97,7 +110,7 @@
           <div class="muted small">${d.short}</div>
           <h2 style="margin:2px 0 8px">${d.name}</h2>
         </div>
-        <span class="pill">权重 ${d.weight}% · ${d.grade} 级</span>
+        <span class="pill">盘上信息 ${d.weight}% · <span class="badge badge--${d.grade}" title="依据强度分级">${d.grade}</span></span>
       </div>`;
 
     dh += `<details class="fold"><summary>理论骨架（${d.theories.length} 条）</summary><ul class="small">`;
@@ -107,26 +120,26 @@
     dh += `<h3>你在这域的方式</h3>`;
     d.used.forEach(u => {
       dh += `<div class="note" style="margin:10px 0">
-        <div><strong>${u.letter}</strong> 侧 · 机制：${u.mech}</div>
-        <div class="small" style="margin-top:6px">可验证的表现：${u.sign}</div>
-        <div class="small" style="margin-top:4px;color:#8a6a52">风险：${u.risk}</div>
+        <div><strong>${u.letter}</strong> 这一侧会怎么做：${u.mech}</div>
+        <div class="small" style="margin-top:6px">在生活里大概是这样：${u.sign}</div>
+        <div class="small" style="margin-top:4px;color:#8a6a52">容易出问题的地方：${u.risk}</div>
       </div>`;
     });
 
     if (d.chart && d.chart.planets.length) {
       dh += `<h3>星盘上对应的落点 <span class="badge badge--C" title="宫位与星座的传统对应关系">C</span></h3>
-        <p class="small muted" style="margin-top:0">主宫第 ${d.chart.cuspHouse} 宫宫头在 ${d.chart.cuspSign}。这一域相关的宫位里落着这些行星（带上「辅」的是次要宫位，权重低一档）：</p><ul class="small">`;
+        <p class="small muted" style="margin-top:0">这一域主要看第 ${d.chart.cuspHouse} 宫（宫头在${d.chart.cuspSign}），另外有次要宫位作参考。落在这几个宫位的行星是：</p><ul class="small">`;
       d.chart.planets.forEach(pl => {
-        dh += `<li><strong>${pl.cn}在${pl.signCn}</strong>（第 ${pl.house} 宫${pl.aux ? '，辅' : ''}${pl.retro ? '，逆行' : ''}）${pl.text ? '：' + pl.text : ''}</li>`;
+        dh += `<li><strong>${pl.cn}在${pl.signCn}</strong>（第 ${pl.house} 宫${pl.aux ? '，次要参考' : ''}${pl.retro ? '，逆行' : ''}）${pl.text ? '：' + pl.text : ''}</li>`;
       });
       dh += `</ul>`;
     } else if (!report.hasChart) {
       dh += `<div class="note note--warn">还没有出生信息，这一块只有人格侧。</div>`;
     } else {
-      dh += `<div class="note note--warn">这张盘在 ${d.chart ? d.chart.cuspHouse : ''} 宫没有行星落点，这一域主要由宫头星座与宫主星决定，权重也相应偏低。</div>`;
+      dh += `<div class="note note--warn">这张盘在第 ${d.chart ? d.chart.cuspHouse : ''} 宫没有行星落点，这块主要靠宫头的星座来定，所以这张盘在这里给的信息偏少。</div>`;
     }
 
-    dh += `<div class="note note--green">合成：${d.synthesis}</div>`;
+    dh += `<div class="note note--green">两边合起来看：${d.synthesis}</div>`;
 
     dh += `<h3>可以做的</h3><ul class="small">`;
     d.actions.forEach(a => { dh += `<li>${a.t}</li>`; });

@@ -2,6 +2,46 @@
 (function () {
   'use strict';
   const A = window.Astro, TXT = window.ASTRO_TEXT;
+  const TRANSIT_TONE = {
+    sun: '自我表达与重心', moon: '情绪与日常节奏', mercury: '沟通、文书与判断',
+    venus: '关系、金钱与审美', mars: '行动、冲突与体力', jupiter: '机会、扩张与信念',
+    saturn: '责任、结构与时间表', uranus: '突变、自由与跳出旧轨',
+    neptune: '模糊、消融与灵感', pluto: '重构、权力与深层动机'
+  };
+  const TRANSIT_VERB_HARMONY = {
+    sun: '重心清楚，适合露面、把要争取的事说出口',
+    moon: '情绪有落处，适合照顾自己，也适合照顾身边的人',
+    mercury: '说得动、谈得拢，适合把要谈的条件摊开谈',
+    venus: '关系与钱的手感顺，适合谈条件、谈感受、谈价钱',
+    mars: '行动有出口，适合把一直拖着的动作做掉',
+    jupiter: '机会容易接上，适合谈合作、要资源',
+    saturn: '进度能落地，适合定规则、定时限、做长期的事',
+    uranus: '换个做法反而顺，适合试新路子',
+    neptune: '直觉准、边界松，适合创作、也适合休息',
+    pluto: '看得清动机，适合处理压着的关系与旧账'
+  };
+  const TRANSIT_VERB_TENSION = {
+    sun: '自我被顶，容易为面子较劲，先放下「被看见」这件事',
+    moon: '情绪被挑，容易把小事读成态度问题，先睡好再谈',
+    mercury: '话容易说岔、文件容易返工，先确认再发',
+    venus: '关系与钱容易起摩擦，别用暗示代替说清',
+    mars: '火气与体力都容易过载，别硬碰，先降温',
+    jupiter: '摊子容易铺大，先砍掉不必要的承诺',
+    saturn: '进度被压，先减量再谈质量',
+    uranus: '计划容易被打断，留一套备用方案',
+    neptune: '容易看不清、被消耗，先把边界立起来',
+    pluto: '权力与控制的事浮出来，别硬扛，先抽身看结构'
+  };
+  const MOON_PHASE_TONE = {
+    '新月': '起步期，适合定方向，不适合要结果',
+    '娥眉月': '试探期，先做小的、能验证的动作',
+    '上弦月': '推进期，卡住的地方要硬顶过去',
+    '盈凸月': '打磨期，把快成的事补细节',
+    '满月': '见光期，关系与情绪的事会浮到台面上',
+    '亏凸月': '消化期，适合复盘与收束',
+    '下弦月': '清理期，砍掉不必要的事',
+    '残月': '收尾期，把没结的尾结掉，别开新局'
+  };
   const app = document.getElementById('app');
   const st = window.Store.load();
 
@@ -34,12 +74,18 @@
     const head = document.createElement('div');
     head.className = 'card card--moon';
     head.id = 'head';
+    const summary = document.createElement('div');
+    summary.className = 'card card--warm';
+    summary.id = 'summary';
     const chartCard = document.createElement('div');
     chartCard.className = 'card';
     chartCard.id = 'chartcard';
     const three = document.createElement('div');
     three.className = 'card';
     three.id = 'three';
+    const planetCard = document.createElement('div');
+    planetCard.className = 'card';
+    planetCard.id = 'planetcard';
     const tableCard = document.createElement('div');
     tableCard.className = 'card';
     tableCard.id = 'tablecard';
@@ -55,7 +101,7 @@
     const fc = document.createElement('div');
     fc.className = 'card card--inset';
     fc.id = 'forecast';
-    app.append(head, chartCard, three, fc, tableCard, aspCard, elemCard, method);
+    app.append(head, summary, chartCard, three, planetCard, fc, tableCard, aspCard, elemCard, method);
   }
 
   /* ---------- 头部 ---------- */
@@ -73,6 +119,79 @@
         <button class="btn btn--ghost btn--small no-print" id="btn-print-natal">打印 / 存 PDF</button>
       </div>`;
     head.querySelector('#btn-print-natal').addEventListener('click', () => window.print());
+  }
+
+  /* ---------- 先看结论 ---------- */
+  function renderSummary(chart) {
+    const card = document.getElementById('summary');
+    const sun = chart.rows[0], moon = chart.rows[1], asc = chart.ascSign;
+    const tight = chart.aspects.filter(a => a.kind === 'major').sort((x, y) => x.exact - y.exact)[0];
+    const missing = Object.entries(chart.elements).filter(([, v]) => v === 0).map(([k]) => k);
+    const tt = window.Foretell.transitNow(chart, window.TransitEngine.jdNow());
+    const nowAspect = tt.aspects.slice().sort((a, b) => a.orb - b.orb)[0];
+
+    let html = `<h2>先看结论：这张盘在说你什么</h2>
+      <p class="small muted" style="margin-bottom:14px">下面这几条可以直接拿去用，细节在后面各节。太阳/月亮/上升的完整句子在「三个最重要的位置」，八颗行星在下一张卡。</p>
+      <ul class="facts">`;
+
+    html += `<li><strong>你怎么活</strong>：${TXT.inSign.sun[sun.sign.id]}</li>`;
+    html += `<li><strong>什么才让你安心</strong>：${TXT.inSign.moon[moon.sign.id]}</li>`;
+    html += `<li><strong>别人先看到什么</strong>：${TXT.asc[asc.id]}</li>`;
+
+    if (tight) {
+      const na = TXT.planets[tight.a] ? TXT.planets[tight.a].cn : tight.a;
+      const nb = TXT.planets[tight.b] ? TXT.planets[tight.b].cn : tight.b;
+      const tension = ['四分相', '冲相'].includes(tight.name);
+      const meaning = TXT.aspects[tight.name] ? (tension ? TXT.aspects[tight.name].tension : TXT.aspects[tight.name].harmony) : '';
+      html += `<li><strong>盘上最紧的一处（误差 ${tight.exact.toFixed(2)}°）</strong>：${na}${tight.symbol}${nb}，${tight.name}。${meaning}</li>`;
+    }
+
+    if (missing.length) {
+      html += `<li><strong>缺口</strong>：计配比的九颗星里没有一颗落在${missing.join('、')}象，这一类事你默认不靠它处理。压力大的时候，失守的往往就是这里。</li>`;
+    }
+
+    if (nowAspect) {
+      const nb = TXT.planets[nowAspect.nBody] ? TXT.planets[nowAspect.nBody].cn : nowAspect.nCn;
+      const h = nowAspect.nBody === 'asc' ? 1 : nowAspect.nBody === 'mc' ? 10 : (chart.rows.find(r => r.id === nowAspect.nBody) || {}).house;
+      const where = h ? `（第 ${h} 宫，${TXT.houses[h]}）` : '';
+      html += `<li><strong>此刻正在发生</strong>：行运${nowAspect.tCn}${nowAspect.symbol}你的${nb}${where}，误差 ${nowAspect.orb.toFixed(2)}°，${nowAspect.applying ? '还在逼近' : '已经过去'}。这一条决定这段时间你被什么事牵着走。</li>`;
+    }
+
+    html += `</ul><div class="note" style="margin-bottom:0">这张盘只描述「默认配置」，不描述命运。同样一张盘，用不用得上取决于你有没有把它当镜子而不是当判决书。</div>`;
+    card.innerHTML = html;
+  }
+
+  /* ---------- 八颗行星逐条 ---------- */
+  function renderPlanets(chart) {
+    const card = document.getElementById('planetcard');
+    const list = chart.rows.filter(r => r.id !== 'sun' && r.id !== 'moon');
+    let html = `<h2>其余八颗行星：一件事各管一段</h2>
+      <p class="small muted">太阳月亮说「你是谁」，这八颗说「你在哪些事上、用什么方式出手」。每条只写这一颗星在它的星座与宫位上的意思，不重复前面三段。</p>`;
+
+    list.forEach(r => {
+      const meta = TXT.planets[r.id];
+      const signTxt = TXT.inSign[r.id][r.sign.id];
+      const hTxt = (TXT.inHouse[r.id] || {})[r.house];
+      let body;
+      if (hTxt) {
+        body = `${signTxt}${hTxt}`;
+      } else {
+        body = `${signTxt}放在第 ${r.house} 宫，这件事就落在「${TXT.houses[r.house]}」上。`;
+      }
+      html += `<div class="card card--inset" style="padding:16px 18px;margin:12px 0">
+        <div class="between" style="align-items:baseline;gap:10px;flex-wrap:wrap">
+          <strong>${meta.glyph} ${meta.cn} · ${r.sign.cn}${r.retro && r.id !== 'pluto' ? ' R' : ''}</strong>
+          <span class="pill pill--line">第 ${r.house} 宫</span>
+        </div>
+        <p class="small" style="margin:8px 0 0">${body}</p>
+      </div>`;
+    });
+
+    const retros = list.filter(r => r.retro).map(r => TXT.planets[r.id].cn);
+    if (retros.length) {
+      html += `<div class="note" style="margin-bottom:0">这张盘上${retros.join('、')}是逆行。逆行在这里不是说「做不到」，而是说这一部分你更习惯往里处理、比别人慢半拍才表态；它常对应童年或长期环境里被压过一段的经历。</div>`;
+    }
+    card.innerHTML = html;
   }
 
   /* ---------- 星盘 ---------- */
@@ -127,10 +246,11 @@
 
       <h3>太阳 · ${sun.sign.cn}（第 ${sun.house} 宫）</h3>
       <p style="margin-bottom:6px">${TXT.inSign.sun[sun.sign.id]}</p>
-      <p class="small muted">落在第 ${sun.house} 宫：这一层主要作用在「${TXT.houses[sun.house]}」这件事上。</p>
+      <p class="small muted">这一层主要作用在「${TXT.houses[sun.house]}」这件事上。</p>
 
       <h3>月亮 · ${moon.sign.cn}（第 ${moon.house} 宫）</h3>
-      <p>${TXT.inSign.moon[moon.sign.id]}</p>
+      <p style="margin-bottom:6px">${TXT.inSign.moon[moon.sign.id]}</p>
+      <p class="small muted">这一层主要作用在「${TXT.houses[moon.house]}」这件事上。</p>
       <p class="small muted">月亮的位置对出生时间敏感：如果时间只记得大概，这一条也可能是条件成立。</p>
 
       <h3>上升 · ${asc.cn}</h3>
@@ -176,19 +296,41 @@
     if (!major.length) {
       html += `<p class="small">没有落在容许度内的主要相位。</p>`;
     } else {
+      const groups = [];
       major.forEach(a => {
-        const na = TXT.planets[a.a] ? TXT.planets[a.a].cn : a.a.toUpperCase();
-        const nb = TXT.planets[a.b] ? TXT.planets[a.b].cn : a.b.toUpperCase();
-        const tension = ['四分相', '冲相'].includes(a.name);
-        const desc = TXT.aspects[a.name] ? (tension ? TXT.aspects[a.name].tension : TXT.aspects[a.name].harmony) : '';
-        html += `
-        <div class="card card--inset" style="padding:14px 16px;margin:10px 0">
-          <div class="between" style="margin-bottom:4px">
-            <strong>${na} ${a.symbol} ${nb} <span class="muted small">${a.name}</span></strong>
-            <span class="pill pill--line">误差 ${a.exact.toFixed(2)}° · ${a.applying ? '入' : '出'}</span>
-          </div>
-          <div class="small muted">${desc}</div>
-        </div>`;
+        let g = groups.filter(x => x.name === a.name)[0];
+        if (!g) {
+          const tension = ['四分相', '冲相'].includes(a.name);
+          const desc = TXT.aspects[a.name] ? (tension ? TXT.aspects[a.name].tension : TXT.aspects[a.name].harmony) : '';
+          g = { name: a.name, desc: desc, items: [] };
+          groups.push(g);
+        }
+        g.items.push(a);
+      });
+
+      const houseOf = id => {
+        if (id === 'asc') return 1;
+        if (id === 'mc') return 10;
+        const row = chart.rows.filter(r => r.id === id)[0];
+        return row ? row.house : null;
+      };
+
+      groups.forEach(g => {
+        html += `<h3 style="margin-top:20px">${g.name}</h3>
+          <p class="small muted" style="margin:4px 0 10px">${g.desc}</p>`;
+        g.items.forEach(a => {
+          const na = TXT.planets[a.a] ? TXT.planets[a.a].cn : a.a.toUpperCase();
+          const nb = TXT.planets[a.b] ? TXT.planets[a.b].cn : a.b.toUpperCase();
+          const ha = houseOf(a.a), hb = houseOf(a.b);
+          const haTxt = ha ? `（第 ${ha} 宫）` : '';
+          const hbTxt = hb ? `（第 ${hb} 宫）` : '';
+          html += `<div class="card card--inset" style="padding:12px 16px;margin:8px 0">
+            <div class="between" style="gap:10px;flex-wrap:wrap">
+              <strong>${na}${haTxt} ${a.symbol} ${nb}${hbTxt}</strong>
+              <span class="pill pill--line">误差 ${a.exact.toFixed(2)}° · ${a.applying ? '入' : '出'}</span>
+            </div>
+          </div>`;
+        });
       });
     }
     html += `<details class="fold"><summary>次要相位</summary><p class="small" style="margin-bottom:0">半六分、半四分、补十二分、五分相的容许度收紧到 2.5°，只在相当精确时才算，避免噪音。它们反映的是细微的处理方式差异，不构成主要结论。</p></details>`;
@@ -301,9 +443,35 @@
           <td class="mono">${a.orb.toFixed(1)}° ${a.applying ? '入' : '出'}</td><td class="small muted">${a.exactStr}</td></tr>`;
       });
       html += `</tbody></table>`;
+
+      html += `<h3 style="margin-top:22px">这些行运落到你身上是什么事</h3>
+        <p class="small muted">按精确度取前五条。每条说的是：哪颗星在动、动的方向、撞上你盘上的哪一块，所以最近什么事会被挑起来。</p>`;
+      tr.aspects.slice(0, 5).forEach(a => {
+        const tone = TRANSIT_TONE[a.tBody] || '这一段的一般事务';
+        const tension = ['四分相', '冲相'].includes(a.aspect);
+        const verb = (tension ? TRANSIT_VERB_TENSION : TRANSIT_VERB_HARMONY)[a.tBody] || '这段时间相关的事会被放大';
+        const stage = a.applying ? '还在逼近，接下来一两周会更明显' : '已经过去，正在减弱';
+        const h = a.nBody === 'asc' ? 1 : a.nBody === 'mc' ? 10 : (chart.rows.find(r => r.id === a.nBody) || {}).house;
+        const where = h ? `本命${a.nCn}（第 ${h} 宫，${TXT.houses[h]}）` : `本命${a.nCn}`;
+        html += `<div class="card" style="padding:15px 17px;margin:10px 0">
+          <div class="between" style="align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:6px">
+            <strong>行运${a.tCn}${a.symbol}${where} <span class="muted small">${a.aspect}</span></strong>
+            <span class="pill pill--line">误差 ${a.orb.toFixed(2)}° · ${a.applying ? '入' : '出'}</span>
+          </div>
+          <p class="small" style="margin:0 0 6px">${a.tCn}动的是「${tone}」：${verb}。</p>
+          <p class="small faint" style="margin:0">${stage}。${tension && a.applying ? '这一条还在加强，别在这个主题上做不可逆的决定。' : ''}</p>
+        </div>`;
+      });
+      html += `<p class="small muted">这五条只说明压力与机会落在哪个主题上，不说明具体会发生什么。具体事件取决于你在这个主题上实际在做什么。</p>`;
     } else {
-      html += `<p class="small">此刻没有落在容许度内的行运相位。</p>`;
+      html += `<p class="small">此刻没有落在容许度内的行运相位。这不代表什么事都没有，只代表天上没有哪颗星正精确压在你盘上的某一点上——这段时间更适合处理自己的节奏，而不是等外部事件。</p>`;
     }
+
+    const phaseTone = MOON_PHASE_TONE[tr.moon.phase];
+    html += `<div class="note" style="margin-bottom:0">
+      <strong>月相在这里的作用</strong>：现在是${tr.moon.phase}（照亮 ${tr.moon.illum}%），${phaseTone || '按月相推进安排节奏'}。月相变的是「哪类事容易起波动」，不改变你盘上的长期结构。
+      ${tr.retros.length ? `<br><strong>逆行</strong>：${tr.retros.join('、')}正在逆行。逆行期适合复盘、修整、把旧事收尾，不适合开新局；其中水星逆行影响最具体——合同、文书、沟通与设备。` : '<br><strong>逆行</strong>：此刻没有行星逆行，是推进新事相对省力的窗口。'}
+    </div>`;
 
     if (b.timeUnknown) {
       html += `<div class="note note--warn">日返与月返都需要精确出生时间（上升与宫位要重算）。你的档案是「时间未知」，这两块先不生成。</div>`;
@@ -382,8 +550,10 @@
   function redraw() {
     const chart = chartOf(system);
     renderHead(chart);
+    renderSummary(chart);
     renderChart(chart);
     renderThree(chart);
+    renderPlanets(chart);
     renderForecast(chart);
     renderTables(chart);
     renderAspects(chart);
